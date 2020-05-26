@@ -8,70 +8,84 @@ import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
+class ScreenNotification:
 
-# Create the I2C interface.
-i2c = busio.I2C(SCL, SDA)
+    # Display text of size text_size at location x and scrolls across the screen
+    def displaySentence(self):
+        while self.x > -self.text_size:
+            # Draw a black filled box to clear the image.
+            self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-# Create the SSD1306 OLED class.
-# The first two parameters are the pixel width and pixel height.  Change these
-# to the right size for your display!
-disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
+            #Draw the text
+            self.draw.text((self.x, 0), self.text, font=self.font, fill=255)
 
-# Clear display.
-disp.fill(0)
-disp.show()
+            # Display image.
+            self.display.image(self.image)
+            self.display.show()
+            time.sleep(0.01)
+            self.x-=10
 
-# Create blank image for drawing.
-# Make sure to create image with mode '1' for 1-bit color.
-width = disp.width
-height = disp.height
-image = Image.new("1", (width, height))
+    #Display the text statically
+    def staticText(self):
 
-# Get drawing object to draw on image.
-draw = ImageDraw.Draw(image)
+        # Draw a black filled box to clear the image.
+        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
+        #Draw the text
 
-# Draw a black filled box to clear the image.
-draw.rectangle((0, 0, width, height), outline=0, fill=0)
+        self.draw.text((self.x, 0), self.text, font=self.font, fill=255)
 
-# Draw some shapes.
-# Move left to right keeping track of the current x position for drawing shapes.
-x = 0
+        # Display image.
+        self.display.image(self.image)
+        self.display.show()
 
-# Load default font.
-font = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoMono-Regular.ttf',28)
+    #Clear screen with black box
+    def clearScreen(self):
+        #Draw a black filled box to clear the image.
+        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-# Alternatively load a TTF font.  Make sure the .ttf font file is in the
-# same directory as the python script!
-# Some other nice fonts to try: http://www.dafont.com/bitmap.php
-# font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 9)
+        # Display image.
+        self.display.image(self.image)
+        self.display.show()
 
-text = "i love you baby and if it's quite alright I need you baby"
+    #Constructor for the Notification class, takes the text from the constructor
+    #and creates the interfaces needed to use the screen
+    def __init__(self, text=""):
+        # Create the I2C interface.
+        self.i2c = busio.I2C(SCL, SDA)
 
-draw.text((x, 0), text, font=font, fill=255)
-disp.image(image)
-disp.show()
+        # Create the SSD1306 OLED class.
+        # The first two parameters are the pixel width and pixel height.  Change these
+        # to the right size for your display!
+        self.display = adafruit_ssd1306.SSD1306_I2C(128, 32, self.i2c)
 
-text_size = draw.textsize(text,font)
+        # Clear display.
+        self.display.fill(0)
+        self.display.show()
 
-time.sleep(1)
+        # Create blank image for drawing.
+        # Make sure to create image with mode '1' for 1-bit color.
+        self.width = self.display.width
+        self.height = self.display.height
+        self.image = Image.new("1", (self.width, self.height))
 
-while True:
+        # Get drawing object to draw on image.
+        self.draw = ImageDraw.Draw(self.image)
 
-    if x < -text_size[0]:
-        x=0
-        draw.rectangle((0, 0, width, height), outline=0, fill=0)
-        draw.text((x, 0), text, font=font, fill=255)
-        disp.image(image)
-        disp.show()
-        time.sleep(1)
-    else:
-        x-=10
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    draw.text((x, 0), text, font=font, fill=255)
+        # Draw a black filled box to clear the image.
+        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-    # Display image.
-    disp.image(image)
-    disp.show()
+        # Move left to right keeping track of the current x position for drawing shapes.
+        self.x = 0
 
-    time.sleep(0.01)
+        self.text = text
+
+        # Load default font.
+        self.font = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoMono-Regular.ttf',28)
+
+        # Alternatively load a TTF font.  Make sure the .ttf font file is in the
+        # same directory as the python script!
+        # Some other nice fonts to try: http://www.dafont.com/bitmap.php
+        # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 9)
+
+        # Calculate text size to display image again when it goes off screen
+        self.text_size = self.draw.textsize(self.text,self.font)[0]+10
