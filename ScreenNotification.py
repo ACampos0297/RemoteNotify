@@ -69,10 +69,27 @@ font = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoMono-Regular.ttf',
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
 # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 9)
 
-text = "I have died everyday, waiting for you Darling"
+text = "i love you baby and if it's quite alright I need you baby"
+
+draw.text((x, 0), text, font=font, fill=255)
+disp.image(image)
+disp.show()
+
+text_size = draw.textsize(text,font)
+
+time.sleep(1)
 
 while True:
 
+    if x < -text_size[0]:
+        x=0
+        draw.rectangle((0, 0, width, height), outline=0, fill=0)
+        draw.text((x, 0), text, font=font, fill=255)
+        disp.image(image)
+        disp.show()
+        time.sleep(1)
+    else:
+        x-=10
     # Draw a black filled box to clear the image.
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
     draw.text((x, 0), text, font=font, fill=255)
@@ -82,5 +99,3 @@ while True:
     disp.show()
 
     time.sleep(0.01)
-
-    x-=10
