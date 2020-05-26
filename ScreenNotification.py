@@ -38,6 +38,9 @@ class ScreenNotification:
         self.display.image(self.image)
         self.display.show()
 
+    def setText(self, text):
+        self.text = text
+
     #Clear screen with black box
     def clearScreen(self):
         #Draw a black filled box to clear the image.
