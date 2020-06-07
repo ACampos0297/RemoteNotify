@@ -43,8 +43,10 @@ def main():
         if favTweets.id == tweet.id:
             print("Already liked")
             return 0
-
+    
+    # Favorites a given Tweet
     api.create_favorite(tweet.id)
+    
 
 
 if __name__ == "__main__":
