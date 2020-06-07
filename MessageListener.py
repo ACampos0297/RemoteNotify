@@ -32,10 +32,7 @@ def main():
     tweet = api.user_timeline(twitterAccount, count=1)[0]
     print(tweet.favorite_count)
     print(tweet.text)
-    debugTweet(tweet)
-    #check if the first tweet has already been liked by host twitter twitterAccount
-    if tweet.
-
+    #debugTweet(tweet)
 
 if __name__ == "__main__":
     main()
