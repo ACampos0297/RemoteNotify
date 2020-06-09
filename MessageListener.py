@@ -32,22 +32,24 @@ def main():
     twitterAccount = "FromAtoL1"
 
     # Get the first tweet from the specificed account
-    tweet = api.user_timeline(twitterAccount, count=1)[0]
-    print(tweet.favorite_count)
-    print(tweet.text)
-
-    # Check if tweet has been favorited by this account
-    favorites = api.favorites() # Get all favorites for host account
-    for favTweets in favorites:
-        # If tweet id shows up in favorites then we have seen this tweet already
-        if favTweets.id == tweet.id:
-            print("Already liked")
-            return 0
+    timelineTweets = api.user_timeline(twitterAccount, count=1)
     
-    # Favorites a given Tweet
-    api.create_favorite(tweet.id)
+    # Tweets we will need to notify and display on screen
+    tweetsAwaiting = ['']
+
+    # Check if tweet has been favorited by any account more than once
+    for tweet in timelineTweets:
+        if tweet.favorite_count == 0: # Tweet has not been liked by any accounts
+            print(tweet.text)
+            tweetsAwaiting.append(tweet.text)
+        else:
+            print("Tweet liked")
+            print(tweet.text)
     
+    # Now that we have the tweets that haven't been shown to the user in tweetsAwaiting
+    # go ahead and send notification that there is a new tweet awaiting and needs to be
+    # displayed
 
-
+    
 if __name__ == "__main__":
     main()
