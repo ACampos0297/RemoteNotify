@@ -34,21 +34,27 @@ def main():
     # Get the first tweet from the specificed account
     timelineTweets = api.user_timeline(twitterAccount, count=1)
     
-    # Tweets we will need to notify and display on screen
     tweetsAwaiting = ['']
 
     # Check if tweet has been favorited by any account more than once
     for tweet in timelineTweets:
+        print(tweet.text)
+        print("Favorite count")
+        print(tweet.favorite_count)
         if tweet.favorite_count == 0: # Tweet has not been liked by any accounts
             print(tweet.text)
             tweetsAwaiting.append(tweet.text)
         else:
             print("Tweet liked")
             print(tweet.text)
-    
+    print(len(tweetsAwaiting))
+    if len(tweetsAwaiting) == 0:
+        print("No new tweets")
+        return 0
     # Now that we have the tweets that haven't been shown to the user in tweetsAwaiting
     # go ahead and send notification that there is a new tweet awaiting and needs to be
     # displayed
+
 
     
 if __name__ == "__main__":
