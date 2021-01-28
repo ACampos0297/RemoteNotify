@@ -34,20 +34,17 @@ def main():
     # Get the first tweet from the specificed account
     timelineTweets = api.user_timeline(twitterAccount, count=1)
     
-    tweetsAwaiting = ['']
+    tweetsAwaiting =[] 
 
     # Check if tweet has been favorited by any account more than once
     for tweet in timelineTweets:
-        print(tweet.text)
-        print("Favorite count")
-        print(tweet.favorite_count)
         if tweet.favorite_count == 0: # Tweet has not been liked by any accounts
             print(tweet.text)
             tweetsAwaiting.append(tweet.text)
         else:
             print("Tweet liked")
             print(tweet.text)
-    print(len(tweetsAwaiting))
+    print(tweetsAwaiting)
     if len(tweetsAwaiting) == 0:
         print("No new tweets")
         return 0
